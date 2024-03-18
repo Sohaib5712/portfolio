@@ -119,6 +119,11 @@ a {
   text-decoration: none;
 }
 
+ol,
+ul {
+  padding: 0;
+}
+
 li {
   list-style: none;
 }
@@ -2122,6 +2127,10 @@ textarea.form-input::-webkit-resizer {
   .sidebar-info_more {
     opacity: 1;
     visibility: visible;
+  }
+
+  ul.contacts-list {
+    padding-left: 10px;
   }
 
   .contacts-list {

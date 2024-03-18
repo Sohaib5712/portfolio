@@ -3,7 +3,7 @@ import "./component.css"
 import { Link } from 'react-router-dom'
 import { useLogout } from '../../page/account/AdminLogout'
 import logo from '../../assets/logo.png'
-import { RiDashboardFill, RiCashFill, RiLogoutCircleFill } from 'react-icons/ri'
+import { RiCashFill, RiLogoutCircleFill } from 'react-icons/ri'
 import { FaUserAlt, FaHistory, FaProjectDiagram } from 'react-icons/fa'
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 
