@@ -19,9 +19,9 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 // test route
-app.get("/", async (req, res) => {
-  res.json({ mssg: "Server is running" });
-});
+// app.get("/", async (req, res) => {
+//   res.json({ mssg: "Server is running" });
+// });
 
 // employee routes
 
