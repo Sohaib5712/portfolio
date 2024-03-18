@@ -9,7 +9,7 @@ const projectRoutes = require("./routes/projectRoutes");
 // Middleware
 app.use(
   cors({
-    origin: [process.env.CORS_ORIGIN],
+    origin: "*",
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true,
   })
