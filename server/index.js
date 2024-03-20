@@ -9,7 +9,7 @@ const projectRoutes = require("./routes/projectRoutes");
 // Middleware
 app.use(
   cors({
-    origin: "*",
+    origin: [process.env.CORS_ORIGIN],
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true,
   })
@@ -19,9 +19,9 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 // test route
-// app.get("/", async (req, res) => {
-//   res.json({ mssg: "Server is running" });
-// });
+app.get("/", async (req, res) => {
+  res.json({ mssg: "Server is running" });
+});
 
 // employee routes
 
