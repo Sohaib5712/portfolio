@@ -9,7 +9,7 @@ const projectRoutes = require("./routes/projectRoutes");
 // Middleware
 app.use(
   cors({
-    origin: [process.env.CORS_ORIGIN],
+    origin: "*",
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true,
   })
@@ -17,7 +17,6 @@ app.use(
 
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
-
 
 // employee routes
 
