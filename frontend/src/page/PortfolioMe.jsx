@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Sidebar } from '../components';
 import { IoEyeOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 const PortfolioMe = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -14,25 +15,24 @@ const PortfolioMe = () => {
     useEffect(() => {
         // Fetch projects when the component mounts
         const fetchProjects = async () => {
-            setIsLoading(true)
+            setIsLoading(true);
             try {
                 const response = await fetch(`${API_URL}/api/project/allProject`);
-                if (response.ok) {
-                    const projectsData = await response.json();
-                    setProjects(projectsData);
-
-                } else {
-                    console.error('Failed to fetch projects');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch projects');
                 }
+                const projectsData = await response.json();
+                setProjects(projectsData);
             } catch (error) {
-                console.error('Error fetching projects:', error.message);
+                toast.error('Failed to fetch Project');
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
         };
 
         fetchProjects();
     }, [API_URL]);
+
 
     return (
         <main>
@@ -49,6 +49,7 @@ const PortfolioMe = () => {
                         <div className="loader"></div>
                     }
                     <section className="projects">
+                        <Toaster position="top-right" />
                         {/* Project List */}
                         <ul className="project-list">
                             {projects.map(project => (
