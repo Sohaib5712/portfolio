@@ -153,6 +153,10 @@ textarea {
   font: inherit;
 }
 
+p {
+  text-align: justify;
+}
+
 ::selection {
   background: var(--orange-yellow-crayola);
   color: var(--smoky-black);
@@ -887,6 +891,12 @@ main {
   margin-bottom: 7px;
 }
 
+.timeline-item-sub-title {
+  font-size: var(--fs-4);
+  line-height: 1.3;
+  margin: 5px 0px;
+}
+
 .timeline-list span {
   color: var(--vegas-gold);
   font-weight: var(--fw-400);
@@ -965,7 +975,62 @@ main {
   border-radius: inherit;
 }
 
+/* download-CV button */
+button.download-cv {
+  font-family: inherit;
+  font-size: 20px;
+  background: var(--bg-gradient-jet);
+  color: white;
+  fill: rgb(155, 153, 153);
+  padding: 0.7em 1em;
+  padding-left: 0.9em;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 15px;
+  font-weight: 1000;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  box-shadow: var(--shadow-2);
+}
 
+button.download-cv span {
+  display: block;
+  margin-left: 0.3em;
+  transition: all 0.3s ease-in-out;
+}
+
+button.download-cv .download-svg {
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.4s ease-in-out;
+}
+
+button.download-cv:hover {
+  background: #121212;
+}
+
+
+button.download-cv:hover .svg-wrapper {
+  transform: scale(1.25);
+  transition: 0.5s linear;
+}
+
+button.download-cv:hover .download-svg {
+  transform: translateX(1.2em) scale(1.1);
+  fill: #FFC663;
+}
+
+button.download-cv:hover span {
+  opacity: 0;
+  transition: 0.5s linear;
+}
+
+button.download-cv:active {
+  transform: scale(0.95);
+}
 
 
 

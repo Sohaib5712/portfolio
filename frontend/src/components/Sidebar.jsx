@@ -73,7 +73,7 @@ const Sidebar = () => (
                     </a>
                 </li>
                 <li className="social-item">
-                    <a href="www.linkedin.com/in/sohaib-sarwar-85552827b" target='_blank' rel='noreferrer' className="social-link">
+                    <a href="https://www.linkedin.com/in/sohaib-sarwar-85552827b" target='_blank' rel='noreferrer' className="social-link">
                         <FaLinkedin />
                     </a>
                 </li>

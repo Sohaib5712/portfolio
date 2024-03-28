@@ -23,7 +23,7 @@ const AboutMe = () => (
             </p>
             <p>I thrive in collaborative environments and welcome the opportunity to collaborate with cross-functional teams. Whether it's brainstorming new features, troubleshooting issues, or optimizing workflows, I'm driven by a shared goal of delivering exceptional results.</p>
 
-            <p>Let's connect! Whether you're interested in discussing tech trends, exploring potential collaborations, or simply having a meaningful conversation, feel free to reach out. Together, we can transform ideas into impactful digital solutions!</p>
+            <p>Lemme Know! Whether you're interested in discussing tech trends, exploring potential collaborations, or simply having a meaningful conversation, feel free to reach out. Together, we can transform ideas into impactful digital solutions!</p>
         </section>
 
         <section className="service">
