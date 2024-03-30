@@ -79,17 +79,11 @@ const Resume = () => {
                             <li className="timeline-item">
                                 <h4 className="h4 timeline-item-title">Bachelor's in Computer Science (University of Engineering & Technology)</h4>
                                 <span>2019 — 2023</span>
-                                <h4 className='h4 timeline-item-sub-title'>Final Year Project (WellEve)</h4>
                                 <p className="timeline-text">
                                     During my final year of studies, I undertook a significant project that exemplified
                                     my skills in web development and problem-solving. I developed a comprehensive
                                     third-party website that serves as a centralized platform for vendors and clients
                                     within the event planning industry.
-                                    The website allows vendors to showcase their venues, complete with detailed
-                                    information such as capacity, available halls, menu options, and décor offerings.
-                                    This platform enhances convenience for clients seeking event spaces by providing
-                                    them with a consolidated view of available options and the flexibility to filter and
-                                    select venues based on their preferences.
                                 </p>
                             </li>
                             <li className="timeline-item">
