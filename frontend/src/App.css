@@ -2333,6 +2333,9 @@ textarea.form-input::-webkit-resizer {
 
 .fl-table .action {
   display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .fl-table .action button {

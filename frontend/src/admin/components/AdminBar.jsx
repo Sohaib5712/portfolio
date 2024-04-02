@@ -31,7 +31,7 @@ const AdminBar = () => {
                     <li className={activeLink === '/admin-dashboard' ? 'active' : ''}><FaProjectDiagram />Add Project</li>
                 </Link>
                 <Link to={"/add-user"}>
-                    <li className={activeLink === '/add-user' ? 'active' : ''}><FaUserAlt />Benutzer</li>
+                    <li className={activeLink === '/add-user' ? 'active' : ''}><FaUserAlt />User</li>
                 </Link>
                 <Link to={"/add-fine"}>
                     <li className={activeLink === '/add-fine' ? 'active' : ''}><RiCashFill />Bußgeldverwaltung</li>

@@ -4,6 +4,7 @@ const projectSchema = new mongoose.Schema({
   projectName: String,
   projectType: String,
   projectUrl: String,
+  userName: String,
   images: [String], // Assuming you store image URLs
   sections: [
     {

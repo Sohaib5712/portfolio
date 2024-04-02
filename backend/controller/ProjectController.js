@@ -3,17 +3,36 @@ const Project = require("../model/ProjectSchema"); // Make sure to adjust the pa
 
 // Fetch all projects
 const fetchAllProjects = async (req, res) => {
-    try {
-      // Fetch all projects from the database
-      const projects = await Project.find();
+  try {
+    // Fetch all projects from the database
+    const projects = await Project.find();
 
-      // Return the projects as JSON response
-      res.status(200).json(projects);
-    } catch (error) {
-      console.error("Error fetching projects:", error.message);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+    // Return the projects as JSON response
+    res.status(200).json(projects);
+  } catch (error) {
+    console.error("Error fetching projects:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
+
+const fetchProjectsByUserName = async (req, res) => {
+  try {
+    // Extract the userName from the request parameters
+    const { userName } = req.params;
+
+    // Fetch projects that match the userName or are set to 'public'
+    const projects = await Project.find({
+      $or: [{ userName: userName }, { userName: "public" }],
+    });
+
+    // Return the filtered projects as JSON response
+    res.status(200).json(projects);
+  } catch (error) {
+    console.error("Error fetching projects:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 // Get an individual project by ID
 const getIndividualProject = async (req, res) => {
@@ -51,16 +70,40 @@ const createProject = async (req, res) => {
 
 // Update a project by ID
 const updateProject = async (req, res) => {
+  const projectId = req.params.id;
+  const {
+    projectName,
+    projectType,
+    userName,
+    images,
+    sections,
+    keyPoints,
+    tools,
+  } = req.body;
+
   try {
-    const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!project) {
-      return res.status(404).send({ error: "Project not found" });
-    }
-    res.send(project);
+    // Find the project by ID
+    const project = await Project.findById(projectId);
+
+    // Update the project properties
+    project.projectName = projectName;
+    project.projectType = projectType;
+    project.userName = userName;
+    project.images = images;
+    project.sections = sections;
+    project.keyPoints = keyPoints;
+    project.tools = tools;
+
+    // Save the updated project
+    const updatedProject = await project.save();
+
+    // Respond with the updated project data
+    res.json(updatedProject);
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error updating project:", error.message);
+    res
+      .status(500)
+      .json({ error: "Something went wrong while updating the project." });
   }
 };
 
@@ -79,6 +122,7 @@ const deleteProject = async (req, res) => {
 
 module.exports = {
   fetchAllProjects,
+  fetchProjectsByUserName,
   getIndividualProject,
   createProject,
   updateProject,

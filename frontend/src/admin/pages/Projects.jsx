@@ -1,40 +1,43 @@
 import React, { useState, useEffect } from 'react';
-
 import { AdminBar, TopBar } from '../components';
 import "./admin.css";
-
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaEye } from 'react-icons/fa';
-
 import toast, { Toaster } from 'react-hot-toast';
-
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 const Projects = () => {
-    const [isLoading, setIsLoading] = useState(true);
+    const { project_user } = useAuthContext();
 
-    const [isModel, setisModel] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isModel, setIsModel] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingProjectId, setEditingProjectId] = useState(null);
     const [projects, setProjects] = useState([]);
     const [projectData, setProjectData] = useState({
         projectName: '',
         projectType: '',
         projectUrl: '',
+        userName: project_user.user,
         images: [],
         sections: [{ heading: '', detail: '' }],
         keyPoints: [''],
         tools: [''],
     });
 
-
     const API_URL = process.env.REACT_APP_BASE_API_URL;
-
-    // fetch project data
     useEffect(() => {
-        // Fetch projects when the component mounts
+        return () => {
+            projectData.images.forEach(image => URL.revokeObjectURL(image.preview));
+        };
+    }, [projectData.images]);
+
+    useEffect(() => {
         const fetchProjects = async () => {
-            setIsLoading(true)
+            setIsLoading(true);
             try {
-                const response = await fetch(`${API_URL}/api/project/allProject`);
+                const response = await fetch(`${API_URL}/api/project/userProject/${project_user.user}`);
                 if (response.ok) {
                     const projectsData = await response.json();
                     setProjects(projectsData);
@@ -44,23 +47,24 @@ const Projects = () => {
             } catch (error) {
                 console.error('Error fetching projects:', error.message);
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
         };
 
         fetchProjects();
-    }, [API_URL]);
-
+    }, [API_URL, project_user]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProjectData({ ...projectData, [name]: value });
     };
 
-
     const handleImageUpload = (e) => {
-        const images = Array.from(e.target.files);
-        setProjectData({ ...projectData, images: [...projectData.images, ...images] });
+        const images = Array.from(e.target.files).map(file => ({
+            file: file,
+            preview: URL.createObjectURL(file)
+        }));
+        setProjectData({ ...projectData, images: images }); // Update images state directly
     };
 
 
@@ -87,7 +91,6 @@ const Projects = () => {
         setProjectData({ ...projectData, sections: updatedSections });
     };
 
-    // key Point function
     const handleKeyPointAdd = () => {
         const newKeyPoint = '';
         setProjectData({ ...projectData, keyPoints: [...projectData.keyPoints, newKeyPoint] });
@@ -105,7 +108,6 @@ const Projects = () => {
         setProjectData({ ...projectData, keyPoints: updatedKeyPoints });
     };
 
-    // tool function
     const handleToolAdd = () => {
         const newTool = '';
         setProjectData({ ...projectData, tools: [...projectData.tools, newTool] });
@@ -123,93 +125,95 @@ const Projects = () => {
         setProjectData({ ...projectData, tools: updatedTools });
     };
 
-    // submit function
-    const handleSubmit = async (e) => {
+    const handleAddOrUpdate = async (e) => {
         e.preventDefault();
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            // Validate the form data before submission
-            if (!projectData.projectName || !projectData.projectType) {
-                toast.error('Project Name and Type is required..');
-                return
-            }
-
             const formData = new FormData();
             formData.append('projectName', projectData.projectName);
             formData.append('projectType', projectData.projectType);
 
-            // Append each image to the FormData
             projectData.images.forEach((image, index) => {
                 formData.append('images', image);
             });
 
-            // Append sections to the FormData
             projectData.sections.forEach((section, index) => {
                 formData.append(`sections[${index}][heading]`, section.heading);
                 formData.append(`sections[${index}][detail]`, section.detail);
             });
 
-            // Append key points to the FormData
             projectData.keyPoints.forEach((keyPoint, index) => {
                 formData.append(`keyPoints[${index}]`, keyPoint);
             });
 
-            // Append tools to the FormData
             projectData.tools.forEach((tool, index) => {
                 formData.append(`tools[${index}]`, tool);
             });
 
-            // Make the API request to create a new project using fetch
-            const response = await fetch(`${API_URL}/api/project/newProject`, {
-                method: 'POST',
+            let apiUrl = `${API_URL}/api/project/newProject`;
+            let method = 'POST';
+
+            if (isEditing) {
+                apiUrl = `${API_URL}/api/project/updateProject/${editingProjectId}`;
+                method = 'PUT';
+            }
+
+            const response = await fetch(apiUrl, {
+                method: method,
                 body: formData,
             });
 
-            // Check if the request was successful (status code 2xx)
             if (response.ok) {
-                // Parse the JSON response
                 const responseData = await response.json();
-                // Handle the successful response as needed
-                setProjects([...projects, responseData]);
-
-                // Optionally, reset the form or perform any other actions after successful submission
-                setProjectData({
-                    projectName: '',
-                    projectType: '',
-                    images: [],
-                    sections: [{ heading: '', detail: '' }],
-                    keyPoints: [''],
-                    tools: [''],
-                });
-
-                // Close the modal after successful submission
-                setisModel(false);
-                toast.success('Project add SuckssFully');
-
+                if (isEditing) {
+                    const updatedProjects = projects.map((project) =>
+                        project._id === editingProjectId ? responseData : project
+                    );
+                    setProjects(updatedProjects);
+                    toast.success('Project updated successfully');
+                } else {
+                    setProjects([...projects, responseData]);
+                    toast.success('Project added successfully');
+                }
+                setIsModel(false);
             } else {
-                toast.error('Failed to create project, Plz Try again ');
+                toast.error(
+                    `Failed to ${isEditing ? 'update' : 'add'} project, please try again.`
+                );
             }
         } catch (error) {
-            toast.error('SomeThing Went Wrong, Plz try again');
+            console.error(
+                `Error ${isEditing ? 'updating' : 'adding'} project:`,
+                error.message
+            );
+            toast.error(
+                `Something went wrong while ${isEditing ? 'updating' : 'adding'} the project.`
+            );
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
+            setProjectData({
+                projectName: '',
+                projectType: '',
+                projectUrl: '',
+                images: [],
+                sections: [{ heading: '', detail: '' }],
+                keyPoints: [''],
+                tools: [''],
+            });
+            setIsEditing(false);
+            setEditingProjectId(null);
         }
     };
 
-    // delete Function
     const handleDelete = async (projectId) => {
         const confirmDelete = window.confirm('Are you sure you want to delete this project?');
-
         if (confirmDelete) {
             try {
-                // Make the API request to delete the project using fetch
                 const response = await fetch(`${API_URL}/api/project/delProject/${projectId}`, {
                     method: 'DELETE',
                 });
 
-                // Check if the request was successful (status code 2xx)
                 if (response.ok) {
-                    // Remove the deleted project from the projects state
                     setProjects(projects.filter(project => project._id !== projectId));
                     toast.success('Project deleted successfully');
                 } else {
@@ -234,7 +238,7 @@ const Projects = () => {
                     <Toaster position="top-right" />
                     <div className="body-header">
                         <h2>Fake Project's</h2>
-                        <button className='project-button' onClick={() => setisModel(!isModel)}>
+                        <button className='project-button' onClick={() => setIsModel(true)}>
                             <span>Add Project</span>
                         </button>
                     </div>
@@ -286,7 +290,20 @@ const Projects = () => {
                                             </ul>
                                         </td>
                                         <td className="action">
-                                            <button><MdEdit color='var(--yellow-color)' /></button>
+                                            <button><MdEdit color='var(--yellow-color)' onClick={() => {
+                                                setIsEditing(true);
+                                                setEditingProjectId(project._id);
+                                                setProjectData({
+                                                    projectName: project.projectName,
+                                                    userName: project.userName,
+                                                    projectType: project.projectType,
+                                                    images: project.images,
+                                                    sections: project.sections,
+                                                    keyPoints: project.keyPoints,
+                                                    tools: project.tools,
+                                                });
+                                                setIsModel(true);
+                                            }} /></button>
                                             <button onClick={() => handleDelete(project._id)}>
                                                 <MdDelete color='var(--red-color)' />
                                             </button>
@@ -295,25 +312,29 @@ const Projects = () => {
                                     </tr>
                                 ))}
                             </tbody>
-
                         </table>
                     </div>
                 </div>
             </div>
-
             {/* add-project modal form */}
             {isModel &&
                 <div className="model-overlay">
                     <div className="model scale-up-center">
                         <div className="model-header">
-                            Project
-                            <IoMdClose size={34} className='close' onClick={() => setisModel(!isModel)} />
+                            {isEditing ? 'Update Project' : 'Add Project'}
+                            <IoMdClose size={34} className='close' onClick={() => setIsModel(!isModel)} />
                         </div>
                         {isLoading && (
                             <div className="loading-bar"></div>
                         )}
                         <div className="model-body">
-                            <form className="project-form" onSubmit={handleSubmit} encType="multipart/form-data">
+                            <form className="project-form" onSubmit={handleAddOrUpdate} encType="multipart/form-data">
+                                <label>Owner:
+                                    <select name="userName" value={projectData.userName} onChange={handleInputChange}>
+                                        <option value={project_user.user}>{project_user.user}</option>
+                                        <option value="public">Public</option>
+                                    </select>
+                                </label>
                                 <label>Project Name:
                                     <input type="text" name="projectName" value={projectData.projectName} onChange={handleInputChange} />
                                 </label>
@@ -337,7 +358,7 @@ const Projects = () => {
                                 <div className="image-preview">
                                     {projectData.images.map((image, index) => (
                                         <div key={index} className="preview-container">
-                                            <img src={URL.createObjectURL(image)} alt={`Preview ${index}`} className="preview-image" />
+                                            <img src={image} alt={`Preview ${index}`} className="preview-image" />
                                             <button type="button" onClick={() => handleImageRemove(index)}>Remove</button>
                                         </div>
                                     ))}

@@ -6,7 +6,7 @@ import "./App.css";
 import Resume from "./page/Resume";
 import { Contact, PortfolioMe, ProjectDetail } from "./page";
 import Login from "./page/account/Login";
-import { Projects } from "./admin/pages";
+import { AddUser, Projects } from "./admin/pages";
 import { useAuthContext } from "./hooks/useAuthContext";
 
 const App = () => {
@@ -38,7 +38,7 @@ const App = () => {
           path="/admin-login"
           element={
             project_user ? (
-              project_user.role === "admin" ? (
+              project_user.role === "Admin" ? (
                 <Projects />
               ) : (
                 <Login />
@@ -51,8 +51,18 @@ const App = () => {
         <Route
           path="/admin-dashboard"
           element={
-            project_user && project_user.role === "admin" ? (
+            project_user && project_user.role === "Admin" ? (
               <Projects />
+            ) : (
+              <Navigate to="/admin-login" />
+            )
+          }
+        />
+        <Route
+          path="/add-user"
+          element={
+            project_user && project_user.role === "Admin" ? (
+              <AddUser />
             ) : (
               <Navigate to="/admin-login" />
             )

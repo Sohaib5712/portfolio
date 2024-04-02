@@ -33,7 +33,7 @@ export const useLogin = () => {
 
             // update loading state
             setIsLoading(false)
-            if (json.role === 'admin') {
+            if (json.role === 'Admin') {
                 navigate("/admin-dashboard")
             } else {
                 navigate("/")

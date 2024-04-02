@@ -36,18 +36,23 @@ const {
   getIndividualProject,
   updateProject,
   deleteProject,
+  fetchProjectsByUserName,
 } = require("../controller/ProjectController");
+
+// add-user + login routes
 
 router.post("/login", login);
 router.post("/signup", signup);
 router.delete("/user/:id", deleteUser);
 router.put("/user/:userId", updateUser);
+router.get("/all-user", getAllUserRecords);
 
 // routes for projects
-router.post("/newProject", parser.array('images', 10), createProject);
+router.post("/newProject", parser.array("images", 10), createProject);
 router.get("/allProject", fetchAllProjects);
+router.get("/userProject/:userName", fetchProjectsByUserName);
 router.get("/detailProject/:id", getIndividualProject);
-router.put("/new/:id", updateProject);
+router.put("/updateProject/:id", updateProject);
 router.delete("/delProject/:id", deleteProject);
 
 module.exports = router;
