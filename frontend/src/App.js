@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Home from "./page/Home";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-
 import "./App.css";
 import Resume from "./page/Resume";
 import { Contact, PortfolioMe, ProjectDetail } from "./page";

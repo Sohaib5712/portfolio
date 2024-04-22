@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Sidebar } from '../components';
 import { IoEyeOutline } from "react-icons/io5";
+import { FaSortDown } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -8,6 +9,7 @@ const PortfolioMe = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [projects, setProjects] = useState([]);
     const [filter, setFilter] = useState('All'); // State to hold the current filter
+    const [showSelectList, setShowSelectList] = useState(false); // State to manage visibility of select-list
 
     const API_URL = process.env.REACT_APP_BASE_API_URL;
     const USER_NAME = process.env.REACT_APP_BASE_USER_NAME;
@@ -33,9 +35,10 @@ const PortfolioMe = () => {
         fetchProjects();
     }, [API_URL, USER_NAME]);
 
-    // Function to handle filter button click
+    // Function to handle filter button and select-item click
     const handleFilterClick = (filterType) => {
         setFilter(filterType);
+        setShowSelectList(false); // Hide the select-list when a filter is selected
     };
 
     // Filter projects based on the current filter
@@ -63,12 +66,40 @@ const PortfolioMe = () => {
                                 <button className={filter === 'Web(php)' ? 'active' : ''} onClick={() => handleFilterClick('Web(php)')}>Web(php)</button>
                             </li>
                             <li className="filter-item">
-                                <button className={filter === 'Web(mern)' ? 'active' : ''} onClick={() => handleFilterClick('Web(mern)')}>Web(mern)</button>
+                                <button className={filter === 'Web(mern)' ? 'active' : ''} onClick={() => handleFilterClick('Web(mern)')}>Web(mern)
+                                </button>
                             </li>
                             <li className="filter-item">
                                 <button className={filter === 'Mobile-App' ? 'active' : ''} onClick={() => handleFilterClick('Mobile-App')}>Mobile-App</button>
                             </li>
                         </ul>
+
+                        <div className="filter-select-box">
+                            <button className="filter-select" onClick={() => setShowSelectList(!showSelectList)}>
+                                <div className="select-value">{filter === 'All' ? 'Select category' : filter}</div>
+                                <div className="select-icon">
+                                    <FaSortDown />
+                                </div>
+                            </button>
+
+                            {showSelectList && (
+                                <ul className="select-list">
+                                    <li className="select-item">
+                                        <button onClick={() => handleFilterClick('All')}>All</button>
+                                    </li>
+                                    <li className="select-item">
+                                        <button onClick={() => handleFilterClick('Web(mern)')}>Web(mern)
+                                        </button>
+                                    </li>
+                                    <li className="select-item">
+                                        <button onClick={() => handleFilterClick('Web(php)')}>Web(php)</button>
+                                    </li>
+                                    <li className="select-item">
+                                        <button onClick={() => handleFilterClick('Mobile-App')}>Mobile-App</button>
+                                    </li>
+                                </ul>
+                            )}
+                        </div>
 
                         <ul className="project-list">
                             {filteredProjects.map(project => (
@@ -89,7 +120,7 @@ const PortfolioMe = () => {
                     </section>
                 </article>
             </div>
-        </main>
+        </main >
     );
 };
 
