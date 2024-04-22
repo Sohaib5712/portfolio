@@ -58,15 +58,10 @@ const Projects = () => {
         const { name, value } = e.target;
         setProjectData({ ...projectData, [name]: value });
     };
-
     const handleImageUpload = (e) => {
-        const images = Array.from(e.target.files).map(file => ({
-            file: file,
-            preview: URL.createObjectURL(file)
-        }));
-        setProjectData({ ...projectData, images: images }); // Update images state directly
+        const images = Array.from(e.target.files);
+        setProjectData({ ...projectData, images: [...projectData.images, ...images] });
     };
-
 
     const handleImageRemove = (index) => {
         const updatedImages = [...projectData.images];
@@ -132,6 +127,8 @@ const Projects = () => {
             const formData = new FormData();
             formData.append('projectName', projectData.projectName);
             formData.append('projectType', projectData.projectType);
+            formData.append('userName', projectData.userName);
+            formData.append('projectUrl', projectData.projectUrl);
 
             projectData.images.forEach((image, index) => {
                 formData.append('images', image);
@@ -344,7 +341,6 @@ const Projects = () => {
                                         <option value="Web(php)">Web(php)</option>
                                         <option value="Web(mern)">Web(mern)</option>
                                         <option value="Mobile-App">Mobile-App</option>
-                                        <option value="Desktop">Desktop</option>
                                         {/* Add more options as needed */}
                                     </select>
                                 </label>
@@ -358,7 +354,7 @@ const Projects = () => {
                                 <div className="image-preview">
                                     {projectData.images.map((image, index) => (
                                         <div key={index} className="preview-container">
-                                            <img src={image} alt={`Preview ${index}`} className="preview-image" />
+                                            <img src={URL.createObjectURL(image)} alt={`Preview ${index}`} className="preview-image" />
                                             <button type="button" onClick={() => handleImageRemove(index)}>Remove</button>
                                         </div>
                                     ))}

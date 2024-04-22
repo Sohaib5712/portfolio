@@ -22,7 +22,7 @@ body {
     margin-top: 50px;
     height: 500px;
     width: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .portfolio-details .project-heading {
@@ -31,6 +31,18 @@ body {
 
 .portfolio-details .project-heading h1 {
     color: var(--orange-yellow-crayola);
+}
+
+.portfolio-details .project-heading .project-heading-url {
+    display: flex;
+    gap: 10px;
+    font-size: 18px;
+}
+.project-heading-url span{
+    color: var(--orange-yellow-crayola);
+}
+.project-heading-url a{
+    color: white;
 }
 
 .portfolio-details .project-tool ul {

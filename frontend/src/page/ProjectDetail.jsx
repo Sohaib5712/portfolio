@@ -51,7 +51,17 @@ const ProjectDetail = () => {
                             </Carousel>
                             <div className="project-heading">
                                 <h1>{project.projectName && project.projectName}</h1>
-                                <p>{project.projectType && project.projectType}</p>
+
+                                <p>{project.projectType && project.projectType}
+                                </p>
+
+                                {project.projectUrl &&
+                                    <div className='project-heading-url'>
+                                        <span>Url:
+                                        </span>
+                                        <a href={project.projectUrl} target='_blank' rel='noreferrer'>{project.projectUrl}</a>
+                                    </div>
+                                }
                             </div>
                             {/* Portfolio Descriptions */}
                             <div className="row gy-4">
@@ -75,7 +85,6 @@ const ProjectDetail = () => {
                                                 <li key={index}>{keyPoint}</li>
                                             ))}
                                             <br />
-                                            <h2><b>{project.price}</b></h2>
                                         </ul>
                                     </div>
                                     <div className="project-tool">

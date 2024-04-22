@@ -6,18 +6,18 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const PortfolioMe = () => {
     const [isLoading, setIsLoading] = useState(true);
-
     const [projects, setProjects] = useState([]);
+    const [filter, setFilter] = useState('All'); // State to hold the current filter
 
     const API_URL = process.env.REACT_APP_BASE_API_URL;
+    const USER_NAME = process.env.REACT_APP_BASE_USER_NAME;
 
     // fetch project data
     useEffect(() => {
-        // Fetch projects when the component mounts
         const fetchProjects = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`${API_URL}/api/project/allProject`);
+                const response = await fetch(`${API_URL}/api/project/userProject/${USER_NAME}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch projects');
                 }
@@ -31,8 +31,15 @@ const PortfolioMe = () => {
         };
 
         fetchProjects();
-    }, [API_URL]);
+    }, [API_URL, USER_NAME]);
 
+    // Function to handle filter button click
+    const handleFilterClick = (filterType) => {
+        setFilter(filterType);
+    };
+
+    // Filter projects based on the current filter
+    const filteredProjects = projects.filter(project => filter === 'All' || project.projectType === filter);
 
     return (
         <main>
@@ -44,19 +51,28 @@ const PortfolioMe = () => {
                         <h2 className="h2 article-title">Portfolio</h2>
                     </header>
 
-                    {/* Projects Section */}
-                    {isLoading &&
-                        <div className="loader"></div>
-                    }
+                    {isLoading && <div className="loader"></div>}
                     <section className="projects">
                         <Toaster position="top-right" />
-                        {/* Project List */}
+
+                        <ul className="filter-list">
+                            <li className="filter-item">
+                                <button className={filter === 'All' ? 'active' : ''} onClick={() => handleFilterClick('All')}>All</button>
+                            </li>
+                            <li className="filter-item">
+                                <button className={filter === 'Web(php)' ? 'active' : ''} onClick={() => handleFilterClick('Web(php)')}>Web(php)</button>
+                            </li>
+                            <li className="filter-item">
+                                <button className={filter === 'Web(mern)' ? 'active' : ''} onClick={() => handleFilterClick('Web(mern)')}>Web(mern)</button>
+                            </li>
+                            <li className="filter-item">
+                                <button className={filter === 'Mobile-App' ? 'active' : ''} onClick={() => handleFilterClick('Mobile-App')}>Mobile-App</button>
+                            </li>
+                        </ul>
+
                         <ul className="project-list">
-                            {projects.map(project => (
-                                <li
-                                    key={project._id}
-                                    className="project-item"
-                                >
+                            {filteredProjects.map(project => (
+                                <li key={project._id} className="project-item">
                                     <Link to={`/project-detail/${project._id}`}>
                                         <figure className="project-img">
                                             <div className="project-item-icon-box">
